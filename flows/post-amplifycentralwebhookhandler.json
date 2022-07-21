@@ -21,33 +21,6 @@
 	},
 	"start": "javascript.1",
 	"nodes": {
-		"logger.1": {
-			"type": "nodehandler://@axway/api-builder-plugin-fn-logger/logger",
-			"name": "Log Message",
-			"method": "log",
-			"parameters": [
-				{
-					"name": "message",
-					"type": "string",
-					"value": "\"!!!!!!!!!! APPROVAL REQUESTED\""
-				}
-			],
-			"outputs": {
-				"next": {
-					"context": null,
-					"routes": [
-						"http.1"
-					],
-					"metaName": "Next"
-				},
-				"error": {
-					"context": "$.error",
-					"routes": [],
-					"metaName": "Error"
-				}
-			},
-			"metaMethod": "Log Message"
-		},
 		"http.1": {
 			"type": "nodehandler://axway-flow/http",
 			"name": "Set HTTP Response",
@@ -129,7 +102,7 @@
 			"outputs": {
 				"true": {
 					"routes": [
-						"logger.1"
+						"javascript.2"
 					],
 					"context": "$.equals",
 					"metaName": "True"
@@ -143,6 +116,98 @@
 				}
 			},
 			"metaMethod": "Equals"
+		},
+		"javascript.2": {
+			"type": "nodehandler://@axway/api-builder-plugin-fn-javascript/javascript",
+			"name": "prepareGetToken",
+			"method": "Execute",
+			"parameters": [
+				{
+					"name": "data",
+					"type": "jsonpath",
+					"value": "$",
+					"metaName": "Data",
+					"metaDescription": "The value to apply as the `data` argument of the JavaScript code. For objects and arrays, `data` is passed by reference."
+				},
+				{
+					"name": "code",
+					"type": "string",
+					"value": "\"let dataToencode = data.env.CLIENT_ID+':'+data.env.CLIENT_SECRET;\\n  let buff = new Buffer(dataToencode);\\n  let encodedData = buff.toString('base64');\\n  \\n  let url = 'https://login.axway.com/auth/realms/Broker/protocol/openid-connect/token';\\n  let headers = {\\n    Authorization : 'Basic '+encodedData,\\n    'Content-Type': 'application/x-www-form-urlencoded'\\n  };\\n  let body = {\\n    grant_type: 'client_credentials'\\n  };\\n  \\n  return {url,headers,body};\""
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": "$.result",
+					"routes": [
+						"rest.1"
+					],
+					"metaName": "Next"
+				},
+				"error": {
+					"context": "$.error",
+					"routes": [],
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Execute"
+		},
+		"rest.1": {
+			"type": "nodehandler://@axway/api-builder-plugin-fn-restclient/rest",
+			"name": "getToken",
+			"method": "post",
+			"parameters": [
+				{
+					"name": "body",
+					"type": "jsonpath",
+					"value": "$.result.body",
+					"metaName": "Body",
+					"metaDescription": "The content to send."
+				},
+				{
+					"name": "url",
+					"type": "jsonpath",
+					"value": "$.result.url",
+					"metaName": "URL",
+					"metaDescription": "The target URL."
+				},
+				{
+					"name": "headers",
+					"type": "jsonpath",
+					"value": "$.result.headers",
+					"metaName": "Headers",
+					"metaDescription": "The HTTP headers to set."
+				}
+			],
+			"outputs": {
+				"2xx": {
+					"routes": [
+						"http.1"
+					],
+					"context": "$.response",
+					"metaName": "2XX"
+				},
+				"3xx": {
+					"routes": [],
+					"context": "$.response",
+					"metaName": "3XX"
+				},
+				"4xx": {
+					"routes": [],
+					"context": "$.response",
+					"metaName": "4XX"
+				},
+				"5xx": {
+					"routes": [],
+					"context": "$.response",
+					"metaName": "5XX"
+				},
+				"error": {
+					"routes": [],
+					"context": "$.error",
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "POST"
 		}
 	}
 }
