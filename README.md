@@ -67,6 +67,6 @@ spec:
 
 The API Builder flow is shown below:
 
-![](https://i.imgur.com/xg4mK2v.png)
+![](https://i.imgur.com/AgWoA8n.png)
 
 The flow can certainly be improved by handling errors and other HTTP response status codes better but it demonstrates an MVP for now.
