@@ -2,6 +2,10 @@
 
 This API Builder project implements the steps described [**here**](https://docs.axway.com/bundle/amplify-central/page/docs/integrate_with_central/webhook/marketplace_subscription_webhook/index.html) to automatically approve Axway Marketplace subscription approval requests.
 
+The API Builder project exposes one API:
+
+* `POST /api/amplifycentralwebhookhandler` which takes an Amplify subscription webhook as the body. This is the webhook that Amplify calls when a marketplace product subscription request is made.
+
 You need to set the following environment variables:
 
 ```
