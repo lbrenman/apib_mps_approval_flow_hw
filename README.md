@@ -2,6 +2,16 @@
 
 This API Builder project implements the steps described [**here**](https://docs.axway.com/bundle/amplify-central/page/docs/integrate_with_central/webhook/marketplace_subscription_webhook/index.html) to automatically approve Axway Marketplace subscription approval requests. It is intended to be an example of the two main steps required to implement a product subscription workflow, namely respond to webhooks and make API calls to the platform. However, it can be extended to notify the API provisioning team and/or log subscriptions in an auditing system or CRM, for example.
 
+The end user flow looks like this:
+
+![](https://i.imgur.com/RaRuLHh.png)
+
+![](https://i.imgur.com/gaM3jcN.png)
+
+![](https://i.imgur.com/zupyrCj.png)
+
+![](https://i.imgur.com/BTP6bZ5.png)
+
 The API Builder project exposes one API:
 
 * `POST /api/amplifycentralwebhookhandler` which takes an Amplify subscription webhook as the body. This is the webhook that Amplify calls when a marketplace product subscription request is made.
